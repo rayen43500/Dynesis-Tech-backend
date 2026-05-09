@@ -52,6 +52,10 @@ app.get("/api/health", (_req, res) => {
   res.json({ ok: true, service: "dynesis-tech-api" });
 });
 
+app.get("/", (_req, res) => {
+  res.json({ ok: true, service: "dynesis-tech-api", status: "ready" });
+});
+
 app.use("/api/payments/webhook", webhookLimiter, paymentWebhookRoutes);
 
 app.use(express.json({ limit: "100kb" }));
