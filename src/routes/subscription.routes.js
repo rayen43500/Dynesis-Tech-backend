@@ -1,22 +1,12 @@
-import express from "express";
+import { Router } from "express";
+import * as subscriptionController from "../controllers/subscription.controller.js";
+import { validateBody } from "../middleware/validate.js";
+import { selectPlanSchema } from "../validators/schemas.js";
 import { requireAuth } from "../middleware/auth.js";
-import { Subscription } from "../models/Subscription.js";
 
-const router = express.Router();
+const router = Router();
 
-router.get("/mine", requireAuth, async (req, res) => {
-  const rows = await Subscription.find({ userId: req.user.sub }).sort({ createdAt: -1 });
-  return res.json(rows);
-});
-
-router.post("/select-plan", requireAuth, async (req, res) => {
-  const { plan } = req.body;
-  const sub = await Subscription.create({
-    userId: req.user.sub,
-    plan,
-    status: "en_attente"
-  });
-  return res.status(201).json(sub);
-});
+router.get("/mine", requireAuth, subscriptionController.mine);
+router.post("/select-plan", requireAuth, validateBody(selectPlanSchema), subscriptionController.selectPlan);
 
 export default router;
