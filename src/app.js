@@ -30,9 +30,17 @@ app.use(
   })
 );
 
-const rawOrigins = (process.env.FRONTEND_URL || "http://localhost:5173")
+function normalizeOrigin(value) {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return value.replace(/\/+$/, "");
+  }
+}
+
+const rawOrigins = (process.env.FRONTEND_URL || "http://localhost:3000")
   .split(",")
-  .map((s) => s.trim())
+  .map((s) => normalizeOrigin(s.trim()))
   .filter(Boolean);
 const allowAllOrigins = rawOrigins.includes("*");
 const allowedOrigins = allowAllOrigins ? [] : rawOrigins;

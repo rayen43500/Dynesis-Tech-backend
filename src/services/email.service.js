@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 
 function getFrontendBaseUrl() {
   const raw = process.env.FRONTEND_URL || "http://localhost:3000";
-  return raw.split(",")[0].trim();
+  return raw.split(",")[0].trim().replace(/\/+$/, "");
 }
 
 function createTransport() {
@@ -44,15 +44,15 @@ export async function sendTransactionalEmail({ to, subject, text, html }) {
 export async function sendVerifyEmail(to, token) {
   const base = getFrontendBaseUrl();
   const link = `${base}/verify-email?token=${encodeURIComponent(token)}`;
-  const subject = "Confirmez votre adresse email — Dynesis Tech";
-  const text = `Bonjour,\n\nConfirmez votre compte en ouvrant ce lien :\n${link}\n\nLe lien expire sous 48 heures.\n\n— Dynesis Tech`;
+  const subject = "Confirmez votre adresse email - Dynesis Tech";
+  const text = `Bonjour,\n\nConfirmez votre compte en ouvrant ce lien :\n${link}\n\nLe lien expire sous 48 heures.\n\nDynesis Tech`;
   return sendTransactionalEmail({ to, subject, text });
 }
 
 export async function sendPasswordResetEmail(to, token) {
   const base = getFrontendBaseUrl();
   const link = `${base}/reset-password?token=${encodeURIComponent(token)}`;
-  const subject = "Reinitialisation du mot de passe — Dynesis Tech";
-  const text = `Bonjour,\n\nReinitialisez votre mot de passe :\n${link}\n\nLe lien expire sous 1 heure.\n\nSi vous n'etes pas a l'origine de cette demande, ignorez ce message.\n\n— Dynesis Tech`;
+  const subject = "Reinitialisation du mot de passe - Dynesis Tech";
+  const text = `Bonjour,\n\nReinitialisez votre mot de passe :\n${link}\n\nLe lien expire sous 1 heure.\n\nSi vous n'etes pas a l'origine de cette demande, ignorez ce message.\n\nDynesis Tech`;
   return sendTransactionalEmail({ to, subject, text });
 }

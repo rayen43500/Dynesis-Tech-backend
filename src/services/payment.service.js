@@ -15,11 +15,21 @@ export async function createCheckoutSession(userId, plan) {
     throw err;
   }
 
-  const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:3000").split(",")[0].trim();
+  if (!process.env.STRIPE_SECRET_KEY) {
+    const err = new Error("Paiement indisponible: cle Stripe manquante.");
+    err.statusCode = 503;
+    throw err;
+  }
+
+  const frontendUrl = (process.env.FRONTEND_URL || "http://localhost:3000")
+    .split(",")[0]
+    .trim()
+    .replace(/\/+$/, "");
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
+    client_reference_id: userId,
     line_items: [
       {
         price_data: {
@@ -30,8 +40,8 @@ export async function createCheckoutSession(userId, plan) {
         quantity: 1
       }
     ],
-    success_url: `${frontendUrl}/compte?payment=success`,
-    cancel_url: `${frontendUrl}/abonnements?payment=cancelled`,
+    success_url: `${frontendUrl}/account?payment=success`,
+    cancel_url: `${frontendUrl}/pricing?payment=cancelled`,
     metadata: { userId, plan }
   });
 

@@ -2,17 +2,32 @@ import bcrypt from "bcryptjs";
 import { User } from "../models/User.js";
 import { Subscription } from "../models/Subscription.js";
 import { QuoteRequest } from "../models/QuoteRequest.js";
+import { ContactMessage } from "../models/ContactMessage.js";
 
 export async function getDashboard(userId, email) {
-  const [subscriptions, quotes] = await Promise.all([
+  const [subscriptions, quotes, contacts] = await Promise.all([
     Subscription.find({ userId }).sort({ createdAt: -1 }),
-    QuoteRequest.find({ email }).sort({ createdAt: -1 })
+    QuoteRequest.find({ email }).sort({ createdAt: -1 }).lean(),
+    ContactMessage.find({ email }).sort({ createdAt: -1 }).lean()
   ]);
+
+  const contactRequests = contacts.map((item) => ({
+    _id: item._id,
+    projectType: item.requestType === "quote" ? "Demande de devis" : item.requestType,
+    estimatedBudget: item.company || "Non precise",
+    message: item.message,
+    createdAt: item.createdAt,
+    status: item.status
+  }));
+
+  const quoteRequests = [...quotes, ...contactRequests].sort(
+    (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+  );
 
   return {
     subscriptionsCount: subscriptions.length,
     activeSubscription: subscriptions.find((s) => s.status === "actif") || null,
-    quoteRequests: quotes,
+    quoteRequests,
     notifications: [
       "Nouvelle version de votre espace client disponible.",
       "Besoin d'un accompagnement ? Contactez Dynesis Tech."

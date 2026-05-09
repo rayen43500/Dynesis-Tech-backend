@@ -8,6 +8,9 @@ export async function checkoutSession(req, res, next) {
     if (e.statusCode === 400) {
       return res.status(400).json({ message: e.message });
     }
+    if (e.statusCode === 503) {
+      return res.status(503).json({ message: e.message });
+    }
     return next(e);
   }
 }
