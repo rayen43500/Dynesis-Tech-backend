@@ -30,14 +30,17 @@ app.use(
   })
 );
 
-const allowedOrigins = (process.env.FRONTEND_URL || "http://localhost:5173")
+const rawOrigins = (process.env.FRONTEND_URL || "http://localhost:5173")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
+const allowAllOrigins = rawOrigins.includes("*");
+const allowedOrigins = allowAllOrigins ? [] : rawOrigins;
 
 app.use(
   cors({
     origin: (origin, callback) => {
+      if (allowAllOrigins) return callback(null, true);
       if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) return callback(null, true);
       return callback(null, false);
