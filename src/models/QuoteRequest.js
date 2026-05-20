@@ -21,6 +21,7 @@ const quoteSchema = new mongoose.Schema(
     },
     estimatedBudget: { type: String, required: true },
     message: { type: String, required: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
     status: { type: String, enum: ["nouvelle", "en_cours", "traitee"], default: "nouvelle" }
   },
   { timestamps: true }

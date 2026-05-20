@@ -68,35 +68,58 @@ export async function sendQuoteAdminNotification(quote) {
   const text = [
     "Nouvelle demande de devis Dynesis Tech",
     "",
-    `Nom: ${quote.firstName} ${quote.lastName}`,
-    `Email: ${quote.email}`,
-    `Telephone: ${quote.phone}`,
-    `Secteur: ${quote.industry}`,
-    `Type: ${quote.projectType}`,
-    `Budget: ${quote.estimatedBudget}`,
+    `Nom : ${quote.firstName} ${quote.lastName}`,
+    `Email : ${quote.email}`,
+    `Téléphone : ${quote.phone}`,
+    `Secteur : ${quote.industry}`,
+    `Type : ${quote.projectType}`,
+    `Budget : ${quote.estimatedBudget}`,
     "",
-    "Message:",
-    quote.message
+    "Message :",
+    quote.message,
+    "",
+    `Référence : ${quote._id}`
   ].join("\n");
-  return sendTransactionalEmail({ to, subject, text });
+  const html = `<p><strong>Nouvelle demande de devis</strong></p>
+<ul>
+<li><strong>Nom :</strong> ${quote.firstName} ${quote.lastName}</li>
+<li><strong>Email :</strong> ${quote.email}</li>
+<li><strong>Téléphone :</strong> ${quote.phone}</li>
+<li><strong>Secteur :</strong> ${quote.industry}</li>
+<li><strong>Type :</strong> ${quote.projectType}</li>
+<li><strong>Budget :</strong> ${quote.estimatedBudget}</li>
+</ul>
+<p><strong>Message :</strong></p>
+<p>${String(quote.message).replace(/\n/g, "<br>")}</p>
+<p style="color:#64748b;font-size:12px;">Réf. ${quote._id}</p>`;
+  return sendTransactionalEmail({ to, subject, text, html });
 }
 
 export async function sendQuoteUserConfirmation(quote) {
-  const subject = "Demande de devis recue — Dynesis Tech";
+  const subject = "Demande de devis reçue — Dynesis Tech";
   const text = [
     `Bonjour ${quote.firstName},`,
     "",
-    "Nous avons bien recu votre demande de devis.",
-    "Notre equipe vous repondra sous 48 heures maximum.",
+    "Nous avons bien reçu votre demande de devis.",
+    "Elle est enregistrée dans votre espace client si vous êtes connecté avec cette adresse email.",
+    "Notre équipe vous répondra sous 48 heures maximum.",
     "",
-    "Recapitulatif:",
-    `- Projet: ${quote.projectType}`,
-    `- Budget estime: ${quote.estimatedBudget}`,
+    "Récapitulatif :",
+    `- Projet : ${quote.projectType}`,
+    `- Budget estimé : ${quote.estimatedBudget}`,
     "",
     "Dynesis Tech",
     contactInbox()
   ].join("\n");
-  return sendTransactionalEmail({ to: quote.email, subject, text });
+  const html = `<p>Bonjour <strong>${quote.firstName}</strong>,</p>
+<p>Nous avons bien reçu votre demande de devis. Notre équipe vous répondra sous <strong>48 heures</strong>.</p>
+<ul>
+<li><strong>Projet :</strong> ${quote.projectType}</li>
+<li><strong>Budget estimé :</strong> ${quote.estimatedBudget}</li>
+</ul>
+<p>Consultez vos demandes dans votre espace client : Devis &amp; documents.</p>
+<p>Dynesis Tech — ${contactInbox()}</p>`;
+  return sendTransactionalEmail({ to: quote.email, subject, text, html });
 }
 
 export async function sendPasswordResetEmail(to, token) {

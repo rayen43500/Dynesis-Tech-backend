@@ -35,6 +35,24 @@ export function requireAuth(req, res, next) {
   }
 }
 
+/** Attache req.user si un Bearer valide est present ; sinon continue (routes publiques). */
+export function optionalAuth(req, res, next) {
+  const auth = req.headers.authorization || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7).trim() : null;
+  if (!token) {
+    return next();
+  }
+  try {
+    const payload = jwt.verify(token, jwtSecret(), { algorithms: ["HS256"] });
+    if (payload.sub && typeof payload.sub === "string") {
+      req.user = payload;
+    }
+  } catch {
+    /* token invalide : soumission anonyme */
+  }
+  return next();
+}
+
 export function requireAdmin(req, res, next) {
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({ message: "Acces refuse." });

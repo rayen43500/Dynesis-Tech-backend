@@ -72,7 +72,7 @@ async function main() {
     { title: "Plateforme IA Retail" },
     {
       title: "Plateforme IA Retail",
-      imageUrl: "https://images.example.com/portfolio/retail-ai.jpg",
+      imageUrl: "/images/project-1.jpg",
       mission: "Automatiser la prediction des ventes et le reporting.",
       technologies: ["Node.js", "React", "MongoDB"],
       result: "+22% de conversion en 3 mois."

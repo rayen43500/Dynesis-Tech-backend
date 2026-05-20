@@ -7,7 +7,9 @@ import { ContactMessage } from "../models/ContactMessage.js";
 export async function getDashboard(userId, email) {
   const [subscriptions, quotes, contacts] = await Promise.all([
     Subscription.find({ userId }).sort({ createdAt: -1 }),
-    QuoteRequest.find({ email }).sort({ createdAt: -1 }).lean(),
+    QuoteRequest.find({ $or: [{ userId }, { email }] })
+      .sort({ createdAt: -1 })
+      .lean(),
     ContactMessage.find({ email }).sort({ createdAt: -1 }).lean()
   ]);
 
