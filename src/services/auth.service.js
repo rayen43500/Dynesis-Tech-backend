@@ -15,6 +15,17 @@ function jwtSecret() {
 const VERIFY_MS = 48 * 60 * 60 * 1000;
 const RESET_MS = 60 * 60 * 1000;
 
+function withDevVerifyUrl(payload, emailResult) {
+  if (process.env.NODE_ENV === "production" || !emailResult?.dev || !emailResult.verifyUrl) {
+    return payload;
+  }
+  return {
+    ...payload,
+    devVerifyUrl: emailResult.verifyUrl,
+    emailDelivery: "dev"
+  };
+}
+
 export async function registerUser(data) {
   const exists = await User.findOne({ email: data.email });
   if (exists) {
@@ -35,16 +46,24 @@ export async function registerUser(data) {
     emailVerifyExpires: new Date(Date.now() + VERIFY_MS)
   });
 
-  await emailService.sendVerifyEmail(user.email, verifyToken).catch((e) => {
+  let emailResult = { dev: true };
+  try {
+    emailResult = await emailService.sendVerifyEmail(user.email, verifyToken);
+  } catch (e) {
     // eslint-disable-next-line no-console
     console.error("Echec envoi email verification:", e);
-  });
+  }
 
-  return {
-    id: user._id,
-    email: user.email,
-    message: "Compte cree. Verifiez votre boite email pour activer le compte."
-  };
+  return withDevVerifyUrl(
+    {
+      id: user._id,
+      email: user.email,
+      message: emailResult.sent
+        ? "Compte cree. Verifiez votre boite email pour activer le compte."
+        : "Compte cree. Configurez SMTP sur le serveur pour recevoir l'email (voir console backend en dev)."
+    },
+    emailResult
+  );
 }
 
 export async function loginUser(data) {
@@ -67,7 +86,7 @@ export async function loginUser(data) {
   );
   // false = compte non verifie ; undefined (anciens comptes) = considere verifie
   const emailVerified = user.emailVerified !== false;
-  return { token, emailVerified };
+  return { token, emailVerified, role: user.role };
 }
 
 export async function getMe(userId) {
@@ -109,11 +128,14 @@ export async function resendVerificationEmail(email) {
   user.emailVerifyTokenHash = hashToken(verifyToken);
   user.emailVerifyExpires = new Date(Date.now() + VERIFY_MS);
   await user.save();
-  await emailService.sendVerifyEmail(user.email, verifyToken).catch((e) => {
+  let emailResult = { dev: true };
+  try {
+    emailResult = await emailService.sendVerifyEmail(user.email, verifyToken);
+  } catch (e) {
     // eslint-disable-next-line no-console
     console.error("Echec envoi email verification:", e);
-  });
-  return { message: "Si un compte existe, un email a ete envoye." };
+  }
+  return withDevVerifyUrl({ message: "Si un compte existe, un email a ete envoye." }, emailResult);
 }
 
 export async function requestPasswordReset(email) {
