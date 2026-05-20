@@ -12,12 +12,7 @@ import userRoutes from "./routes/user.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-import {
-  apiLimiter,
-  authLimiter,
-  contactLimiter,
-  webhookLimiter
-} from "./middleware/rateLimiters.js";
+import { apiLimiter, contactLimiter, webhookLimiter } from "./middleware/rateLimiters.js";
 
 export const app = express();
 
@@ -84,7 +79,7 @@ app.use(
 
 app.use("/api", apiLimiter);
 
-app.use("/api/auth", authLimiter, authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/quotes", quoteRoutes);
 app.use("/api/subscriptions", subscriptionRoutes);
 app.use("/api/payments", paymentRoutes);

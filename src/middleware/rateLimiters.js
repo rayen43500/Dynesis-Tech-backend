@@ -1,18 +1,22 @@
 import rateLimit from "express-rate-limit";
 
+const isDev = process.env.NODE_ENV !== "production";
+
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 400,
+  max: isDev ? 2000 : 400,
   standardHeaders: true,
   legacyHeaders: false,
   message: { message: "Trop de requetes. Reessayez plus tard." }
 });
 
-export const authLimiter = rateLimit({
+/** Login / inscription / reset uniquement — pas sur GET /me */
+export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 25,
+  max: isDev ? 200 : 15,
   standardHeaders: true,
   legacyHeaders: false,
+  skipSuccessfulRequests: true,
   message: { message: "Trop de tentatives de connexion. Reessayez plus tard." }
 });
 
