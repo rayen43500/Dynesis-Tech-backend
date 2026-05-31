@@ -1,30 +1,26 @@
-import dotenv from "dotenv";
-import { app } from "./app.js";
-import { connectDb } from "./config/db.js";
+import { env } from './config/env.js';
+import { connectMongo } from './config/mongo.js';
+import { createApp } from './app.js';
 
-dotenv.config();
-
-if (process.env.NODE_ENV === "production") {
-  const required = ["MONGO_URI", "JWT_SECRET", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET"];
-  const missing = required.filter((key) => !process.env[key]);
-  if (missing.length) {
+async function main() {
+  await connectMongo();
+  const app = createApp();
+  const server = app.listen(env.PORT, () => {
     // eslint-disable-next-line no-console
-    console.error("Variables d'environnement manquantes:", missing.join(", "));
-    process.exit(1);
+    console.log(`API listening on port ${env.PORT}`);
+  });
+
+  function shutdown() {
+    server.close(() => process.exit(0));
   }
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
 }
 
-const port = Number(process.env.PORT || 5000);
+main().catch((err) => {
+  // eslint-disable-next-line no-console
+  console.error('Failed to start server', err);
+  process.exit(1);
+});
 
-connectDb()
-  .then(() => {
-    app.listen(port, () => {
-      // eslint-disable-next-line no-console
-      console.log(`API Dynesis Tech en ecoute sur http://localhost:${port}`);
-    });
-  })
-  .catch((error) => {
-    // eslint-disable-next-line no-console
-    console.error("Erreur connexion base de donnees:", error);
-    process.exit(1);
-  });

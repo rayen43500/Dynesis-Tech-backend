@@ -1,7 +1,14 @@
-import Stripe from "stripe";
+import Stripe from 'stripe';
+import { env } from './env.js';
 
-const key = process.env.STRIPE_SECRET_KEY || "";
+export function getStripeClient() {
+  if (!env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is missing');
+  }
+  return new Stripe(env.STRIPE_SECRET_KEY, {
+    apiVersion: '2024-06-20'
+  });
+}
 
-export const stripe = new Stripe(key, {
-  apiVersion: "2024-06-20"
-});
+export const stripeWebhookSecret = env.STRIPE_WEBHOOK_SECRET;
+

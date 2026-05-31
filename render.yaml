@@ -3,7 +3,7 @@ services:
     name: dynesis-tech-backend
     env: node
     plan: free
-    rootDir: backend
+    rootDir: .
     buildCommand: npm ci
     startCommand: npm start
     autoDeploy: true

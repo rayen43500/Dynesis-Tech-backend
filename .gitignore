@@ -25,3 +25,8 @@ coverage/
 # Build output (if any)
 dist/
 build/
+
+# Uploaded media
+uploads/*
+!uploads/developers/
+!uploads/developers/.gitkeep

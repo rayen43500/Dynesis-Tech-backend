@@ -1,95 +1,77 @@
-import express from "express";
-import cors from "cors";
-import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
-import authRoutes from "./routes/auth.routes.js";
-import quoteRoutes from "./routes/quote.routes.js";
-import subscriptionRoutes from "./routes/subscription.routes.js";
-import paymentRoutes from "./routes/payment.routes.js";
-import paymentWebhookRoutes from "./routes/paymentWebhook.routes.js";
-import contentRoutes from "./routes/content.routes.js";
-import userRoutes from "./routes/user.routes.js";
-import contactRoutes from "./routes/contact.routes.js";
-import adminRoutes from "./routes/admin.routes.js";
-import { errorHandler } from "./middleware/errorHandler.js";
-import { apiLimiter, contactLimiter, webhookLimiter } from "./middleware/rateLimiters.js";
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import mongoSanitize from 'express-mongo-sanitize';
+import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-export const app = express();
+import { getAllowedOrigins } from './config/env.js';
+import { errorHandler } from './api/v1/middlewares/errorHandler.js';
+import { requestId } from './api/v1/middlewares/requestId.js';
+import { uploadsRoot } from './config/upload.js';
 
-app.set("trust proxy", 1);
+import { apiV1Router } from './api/v1/routes/index.js';
+import { quotesPublicRouter } from './api/v1/routes/public/quotes.routes.js';
 
-app.use(
-  helmet({
-    contentSecurityPolicy: false,
-    crossOriginResourcePolicy: { policy: "cross-origin" }
-  })
-);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-function normalizeOrigin(value) {
-  try {
-    return new URL(value).origin;
-  } catch {
-    return value.replace(/\/+$/, "");
-  }
+export function createApp() {
+  const app = express();
+
+  app.disable('x-powered-by');
+
+  app.use(helmet());
+  // Stripe webhooks require the raw body for signature verification.
+  app.use('/api/v1/payments/webhook', express.raw({ type: 'application/json' }));
+
+  app.use(express.json({ limit: '1mb' }));
+  app.use(cookieParser());
+  app.use(mongoSanitize());
+
+  const allowedOrigins = getAllowedOrigins();
+  app.use(
+    cors({
+      origin(origin, cb) {
+        // Allow server-to-server or non-browser tooling
+        if (!origin) return cb(null, true);
+        if (allowedOrigins.includes(origin)) return cb(null, true);
+        return cb(new Error('Not allowed by CORS'));
+      },
+      credentials: true
+    })
+  );
+
+  app.use(
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      limit: 300,
+      standardHeaders: true,
+      legacyHeaders: false
+    })
+  );
+
+  app.use(requestId);
+
+  app.get('/health', (req, res) => res.status(200).json({ ok: true }));
+
+  app.use(
+    '/uploads',
+    (_req, res, next) => {
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+      next();
+    },
+    express.static(uploadsRoot)
+  );
+
+  app.use('/api/v1', apiV1Router);
+  app.use('/api/quotes', quotesPublicRouter);
+
+  // Central error handler (must be last)
+  app.use(errorHandler);
+
+  return app;
 }
 
-const rawOrigins = (process.env.FRONTEND_URL || "http://localhost:3000")
-  .split(",")
-  .map((s) => normalizeOrigin(s.trim()))
-  .filter(Boolean);
-const allowAllOrigins = rawOrigins.includes("*");
-const allowedOrigins = allowAllOrigins ? [] : rawOrigins;
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowAllOrigins) return callback(null, true);
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(null, false);
-    },
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Stripe-Signature"],
-    optionsSuccessStatus: 204
-  })
-);
-
-app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, service: "dynesis-tech-api" });
-});
-
-app.get("/", (_req, res) => {
-  res.json({ ok: true, service: "dynesis-tech-api", status: "ready" });
-});
-
-app.use("/api/payments/webhook", webhookLimiter, paymentWebhookRoutes);
-
-app.use(express.json({ limit: "100kb" }));
-app.use(
-  mongoSanitize({
-    replaceWith: "_",
-    onSanitize: ({ req, key }) => {
-      if (process.env.NODE_ENV !== "production") {
-        // eslint-disable-next-line no-console
-        console.warn(`[mongo-sanitize] Cle suspecte supprimee: ${key} ${req.method} ${req.path}`);
-      }
-    }
-  })
-);
-
-app.use("/api", apiLimiter);
-
-app.use("/api/auth", authRoutes);
-app.use("/api/quotes", quoteRoutes);
-app.use("/api/subscriptions", subscriptionRoutes);
-app.use("/api/payments", paymentRoutes);
-app.use("/api/content", contentRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/contact", contactLimiter, contactRoutes);
-app.use("/api/admin", adminRoutes);
-
-app.use((_req, res) => {
-  res.status(404).json({ message: "Non trouve." });
-});
-
-app.use(errorHandler);
