@@ -14,6 +14,7 @@ import { uploadsRoot } from './config/upload.js';
 
 import { apiV1Router } from './api/v1/routes/index.js';
 import { quotesPublicRouter } from './api/v1/routes/public/quotes.routes.js';
+import { contactPublicRouter } from './api/v1/routes/public/contact.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -68,6 +69,7 @@ export function createApp() {
 
   app.use('/api/v1', apiV1Router);
   app.use('/api/quotes', quotesPublicRouter);
+  app.use('/api/contact', contactPublicRouter);
 
   // Central error handler (must be last)
   app.use(errorHandler);

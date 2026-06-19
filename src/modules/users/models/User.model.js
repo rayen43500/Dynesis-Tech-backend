@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema(
     role: { type: String, required: true, enum: ['admin', 'client'], index: true },
 
     displayName: { type: String, default: '' },
+    profilePicture: { type: String, default: '' },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     isActivated: { type: Boolean, default: false },
     activationToken: { type: String, default: undefined },

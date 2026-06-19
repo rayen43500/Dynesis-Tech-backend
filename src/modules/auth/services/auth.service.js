@@ -12,6 +12,7 @@ import { Quote } from '../../quotes/models/Quote.model.js';
 import { RefreshToken } from '../models/RefreshToken.model.js';
 import { sendEmail } from '../../../infrastructure/mail/mailer.js';
 import { activationEmailTemplate } from '../../../infrastructure/mail/emailTemplates.js';
+import { mapPublicUser } from '../../users/services/userAccount.service.js';
 
 function calcRefreshExpiresAt() {
   return new Date(Date.now() + AUTH.jwt.refreshTtlSeconds * 1000);
@@ -107,13 +108,13 @@ export const authService = {
       await existingQuote.save();
     }
 
-    return { user: { id: user._id, email: user.email, role: user.role }, tokens: await issueTokensForUser(user) };
+    return { user: mapPublicUser(user), tokens: await issueTokensForUser(user) };
   },
 
   async me({ userId }) {
     const user = await User.findById(userId);
     if (!user) throw new ApiError({ statusCode: 404, code: 'NOT_FOUND', message: 'User not found' });
-    return { user: { id: user._id, email: user.email, role: user.role, displayName: user.displayName } };
+    return { user: mapPublicUser(user) };
   },
 
   async refresh({ refreshToken }) {
@@ -190,12 +191,7 @@ export const authService = {
 
     const tokens = await issueTokensForUser(user);
     return {
-      user: {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-        displayName: user.displayName
-      },
+      user: mapPublicUser(user),
       tokens
     };
   },

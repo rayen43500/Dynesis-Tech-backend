@@ -55,7 +55,7 @@ export const authController = {
     }
 
     res.clearCookie(AUTH.cookie.name, { path: '/api/v1/auth/refresh' });
-    return res.status(200).json({ data: { ok: true } });
+    return res.status(200).json({ success: true, data: { ok: true } });
   }),
 
   googleVerify: asyncHandler(async (req, res) => {
