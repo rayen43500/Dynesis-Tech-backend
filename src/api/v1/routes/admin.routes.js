@@ -17,6 +17,7 @@ import { projectsAdminRouter } from './admin/projects.routes.js';
 import { translationsAdminRouter } from './admin/translations.routes.js';
 import { mediaAdminRouter } from './admin/media.routes.js';
 import { settingsAdminRouter } from './admin/settings.routes.js';
+import { adminAccountRouter } from './admin/account.routes.js';
 
 export const adminRouter = Router();
 
@@ -37,4 +38,5 @@ adminRouter.use('/projects', projectsAdminRouter);
 adminRouter.use('/translations', translationsAdminRouter);
 adminRouter.use('/media', mediaAdminRouter);
 adminRouter.use('/settings', settingsAdminRouter);
+adminRouter.use('/account', adminAccountRouter);
 
