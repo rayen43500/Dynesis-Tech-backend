@@ -15,7 +15,11 @@ export const notificationsAdminController = {
 
     const [newQuotes, newMessages] = await Promise.all([
       Quote.countDocuments(quoteFilter),
-      Message.countDocuments({ status: 'new' })
+      Message.countDocuments(
+        req.query.since && !Number.isNaN(new Date(req.query.since).getTime())
+          ? { status: 'new', createdAt: { $gt: new Date(req.query.since) } }
+          : { status: 'new' }
+      )
     ]);
 
     return res.status(200).json({ newQuotes, newMessages });
