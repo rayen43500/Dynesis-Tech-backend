@@ -11,4 +11,4 @@ servicesAdminRouter.post('/', validateRequest({ body: serviceCreateSchema }), se
 
 servicesAdminRouter.get('/:id', validateRequest({ params: servicesIdParamSchema }), servicesAdminController.getById);
 servicesAdminRouter.patch('/:id', validateRequest({ params: servicesIdParamSchema, body: serviceUpdateSchema }), servicesAdminController.update);
-
+servicesAdminRouter.delete('/:id', validateRequest({ params: servicesIdParamSchema }), servicesAdminController.remove);

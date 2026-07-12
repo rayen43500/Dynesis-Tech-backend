@@ -42,6 +42,17 @@ export const servicesAdminController = {
     const updated = await Service.findByIdAndUpdate(id, { $set: req.body }, { new: true }).lean();
     if (!updated) throw new ApiError({ statusCode: 404, code: 'NOT_FOUND', message: 'Service not found' });
     return sendSuccess(res, { data: updated });
+  }),
+
+  remove: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new ApiError({ statusCode: 400, code: 'VALIDATION_ERROR', message: 'Invalid id' });
+    }
+
+    const deleted = await Service.findByIdAndDelete(id).lean();
+    if (!deleted) throw new ApiError({ statusCode: 404, code: 'NOT_FOUND', message: 'Service not found' });
+    return sendSuccess(res, { data: { ok: true } });
   })
 };
 

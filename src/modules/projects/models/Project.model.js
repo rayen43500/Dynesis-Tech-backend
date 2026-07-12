@@ -31,6 +31,8 @@ const ActivityItemSchema = new mongoose.Schema(
 const ProjectSchema = new mongoose.Schema(
   {
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'ClientProfile', required: true, index: true },
+    projectManagerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null, index: true },
+    assignedDeveloperIds: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [], index: true },
 
     title: { type: String, default: '', index: true },
     status: { type: String, enum: ['active', 'paused', 'completed', 'canceled'], default: 'active', index: true },

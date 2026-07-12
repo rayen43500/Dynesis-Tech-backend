@@ -6,6 +6,7 @@ import { mediaRouter } from './media.routes.js';
 import { paymentsRouter } from './payments.routes.js';
 import { adminRouter } from './admin.routes.js';
 import { clientRouter } from './client.routes.js';
+import { developerRouter } from './developer.routes.js';
 import { publicRouter } from './public.routes.js';
 import { quotesPublicRouter } from './public/quotes.routes.js';
 
@@ -20,6 +21,7 @@ apiV1Router.use('/media', mediaRouter);
 apiV1Router.use('/payments', paymentsRouter);
 apiV1Router.use('/admin', adminRouter);
 apiV1Router.use('/client', clientRouter);
+apiV1Router.use('/developer', developerRouter);
 apiV1Router.use('/public', publicRouter);
 apiV1Router.use('/quotes', quotesPublicRouter);
 
