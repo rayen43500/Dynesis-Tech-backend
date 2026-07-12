@@ -4,6 +4,7 @@ import { ApiError } from '../../../shared/http/apiErrors.js';
 import { getStripeClient, stripeWebhookSecret } from '../../../config/stripe.js';
 import { PaymentEvent } from '../../../modules/payments/models/PaymentEvent.model.js';
 import { stripePaymentsService } from '../../../modules/payments/services/stripePayments.service.js';
+import { invoicesService } from '../../../modules/invoices/services/invoices.service.js';
 
 function mapEventStatus(type) {
   if (type === 'checkout.session.completed') return 'completed';
@@ -61,7 +62,19 @@ export const paymentsController = {
       throw err;
     }
 
-    // For now we only persist the event. Later we will map event types into invoices/payments domain models.
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data?.object;
+      const invoiceId = session?.metadata?.invoiceId;
+      const amountPaid = (session?.amount_total || 0) / 100;
+      if (invoiceId && amountPaid > 0) {
+        await invoicesService.recordPayment({
+          invoiceId,
+          amountPaid,
+          stripePaymentIntentId: session.payment_intent || ''
+        });
+      }
+    }
+
     return res.status(200).json({ received: true });
   })
 };

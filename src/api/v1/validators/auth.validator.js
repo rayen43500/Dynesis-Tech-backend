@@ -27,3 +27,7 @@ export const resendActivationSchema = z.object({
   email: z.string().email()
 });
 
+export const twoFactorTokenSchema = z.object({
+  token: z.string().min(6).max(8)
+});
+

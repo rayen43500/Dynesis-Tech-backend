@@ -13,12 +13,18 @@ import { Service } from './modules/services/models/Service.model.js';
 import { PlatformSettings } from './modules/settings/models/PlatformSettings.model.js';
 import { platformSettingsDefaults } from './modules/settings/platformSettingsDefaults.js';
 import { User } from './modules/users/models/User.model.js';
+import { Notification } from './modules/notifications/models/Notification.model.js';
+import { DeveloperTask } from './modules/developer-work/models/DeveloperTask.model.js';
 import { hashPassword } from './shared/security/password.js';
 
 const DEFAULT_ADMIN_EMAIL = 'admin@dynesis.tech';
 const DEFAULT_ADMIN_PASSWORD = 'Admin123456!';
 const DEFAULT_CLIENT_EMAIL = 'client@dynesis.tech';
 const DEFAULT_CLIENT_PASSWORD = 'Client123456!';
+const DEFAULT_DEVELOPER_EMAIL = 'developer@dynesis.tech';
+const DEFAULT_DEVELOPER_PASSWORD = 'Developer123456!';
+const DEFAULT_PM_EMAIL = 'pm@dynesis.tech';
+const DEFAULT_PM_PASSWORD = 'Pm123456!';
 
 const localized = (en, fr = en) => ({ en, fr });
 
@@ -323,6 +329,44 @@ async function seedDemoClientAndProject(adminUser) {
     });
   }
 
+  let developerUser = await User.findOne({ email: DEFAULT_DEVELOPER_EMAIL }).select('+passwordHash');
+  if (developerUser) {
+    developerUser.role = 'developer';
+    developerUser.isActivated = true;
+    if (env.NODE_ENV !== 'production') {
+      developerUser.passwordHash = await hashPassword(DEFAULT_DEVELOPER_PASSWORD);
+    }
+    await developerUser.save();
+  } else {
+    developerUser = await User.create({
+      email: DEFAULT_DEVELOPER_EMAIL,
+      role: 'developer',
+      displayName: 'Demo Developer',
+      isActivated: true,
+      passwordHash: await hashPassword(DEFAULT_DEVELOPER_PASSWORD),
+      createdBy: adminUser?._id || null
+    });
+  }
+
+  let pmUser = await User.findOne({ email: DEFAULT_PM_EMAIL }).select('+passwordHash');
+  if (pmUser) {
+    pmUser.role = 'project_manager';
+    pmUser.isActivated = true;
+    if (env.NODE_ENV !== 'production') {
+      pmUser.passwordHash = await hashPassword(DEFAULT_PM_PASSWORD);
+    }
+    await pmUser.save();
+  } else {
+    pmUser = await User.create({
+      email: DEFAULT_PM_EMAIL,
+      role: 'project_manager',
+      displayName: 'Demo Project Manager',
+      isActivated: true,
+      passwordHash: await hashPassword(DEFAULT_PM_PASSWORD),
+      createdBy: adminUser?._id || null
+    });
+  }
+
   const clientProfile = await ClientProfile.findOneAndUpdate(
     { userId: clientUser._id },
     {
@@ -339,11 +383,13 @@ async function seedDemoClientAndProject(adminUser) {
     { upsert: true, new: true, setDefaultsOnInsert: true }
   );
 
-  await Project.findOneAndUpdate(
+  const project = await Project.findOneAndUpdate(
     { clientId: clientProfile._id, title: 'Customer Portal Modernization' },
     {
       $set: {
         clientId: clientProfile._id,
+        projectManagerId: pmUser._id,
+        assignedDeveloperIds: [developerUser._id],
         title: 'Customer Portal Modernization',
         status: 'active',
         paymentStatus: 'unpaid',
@@ -366,7 +412,64 @@ async function seedDemoClientAndProject(adminUser) {
     { upsert: true, new: true, setDefaultsOnInsert: true }
   );
 
+  await DeveloperTask.findOneAndUpdate(
+    { projectId: project._id, title: 'Implement authentication flows' },
+    {
+      $set: {
+        projectId: project._id,
+        assigneeId: developerUser._id,
+        reporterId: pmUser._id,
+        title: 'Implement authentication flows',
+        description: 'Build login, registration, and password reset screens.',
+        status: 'in_progress',
+        priority: 'high',
+        dueDate: new Date('2026-08-01'),
+        estimatedHours: 16,
+        checklist: [
+          { label: 'Login page', completed: true },
+          { label: 'Registration flow', completed: false },
+          { label: 'Password reset', completed: false }
+        ]
+      }
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+
+  await DeveloperTask.findOneAndUpdate(
+    { projectId: project._id, title: 'Design system tokens' },
+    {
+      $set: {
+        projectId: project._id,
+        assigneeId: developerUser._id,
+        reporterId: pmUser._id,
+        title: 'Design system tokens',
+        description: 'Define color, spacing, and typography tokens.',
+        status: 'todo',
+        priority: 'medium',
+        dueDate: new Date('2026-08-10'),
+        estimatedHours: 8
+      }
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+
+  await Notification.findOneAndUpdate(
+    { userId: clientUser._id, title: 'Project kickoff completed' },
+    {
+      $set: {
+        userId: clientUser._id,
+        type: 'project',
+        title: 'Project kickoff completed',
+        body: 'Your Customer Portal Modernization project has started.',
+        link: '/dashboard/client/projects'
+      }
+    },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+
   console.log(`Demo client ready: ${DEFAULT_CLIENT_EMAIL}`);
+  console.log(`Demo developer ready: ${DEFAULT_DEVELOPER_EMAIL}`);
+  console.log(`Demo project manager ready: ${DEFAULT_PM_EMAIL}`);
   return clientUser;
 }
 

@@ -4,6 +4,7 @@ import { AUTH } from '../../../config/auth.js';
 import { asyncHandler } from '../middlewares/asyncHandler.js';
 import { authService } from '../../../modules/auth/services/auth.service.js';
 import { googleAuthService } from '../../../modules/auth/services/googleAuth.service.js';
+import { twoFactorService } from '../../../modules/auth/services/twoFactor.service.js';
 import { ApiError } from '../../../shared/http/apiErrors.js';
 
 function cookieOptions() {
@@ -78,6 +79,21 @@ export const authController = {
     const { email } = req.body;
     await authService.resendActivation({ email });
     return res.status(200).json({ success: true });
+  }),
+
+  setup2fa: asyncHandler(async (req, res) => {
+    const result = await twoFactorService.setup({ userId: req.user.userId });
+    return res.status(200).json({ data: result });
+  }),
+
+  enable2fa: asyncHandler(async (req, res) => {
+    const result = await twoFactorService.enable({ userId: req.user.userId, token: req.body.token });
+    return res.status(200).json({ data: result });
+  }),
+
+  disable2fa: asyncHandler(async (req, res) => {
+    const result = await twoFactorService.disable({ userId: req.user.userId, token: req.body.token });
+    return res.status(200).json({ data: result });
   })
 };
 

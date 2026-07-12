@@ -1,0 +1,28 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Dynesis Tech API",
+    "version": "1.0.0",
+    "description": "REST API for Dynesis Tech SaaS platform"
+  },
+  "servers": [{ "url": "/api/v1" }],
+  "paths": {
+    "/auth/login": { "post": { "summary": "Login", "tags": ["Auth"] } },
+    "/auth/me": { "get": { "summary": "Current user", "tags": ["Auth"] } },
+    "/auth/2fa/setup": { "post": { "summary": "Setup 2FA", "tags": ["Security"] } },
+    "/client/projects": { "get": { "summary": "List client projects", "tags": ["Client"] } },
+    "/client/invoices": { "get": { "summary": "List client invoices", "tags": ["Billing"] } },
+    "/client/tickets": { "get": { "summary": "List support tickets", "tags": ["Support"] } },
+    "/admin/projects": { "get": { "summary": "List projects", "tags": ["Admin"] } },
+    "/admin/invoices": { "get": { "summary": "List invoices", "tags": ["Billing"] } },
+    "/admin/tickets": { "get": { "summary": "List tickets", "tags": ["Support"] } },
+    "/admin/faq": { "get": { "summary": "List FAQ entries", "tags": ["CMS"] } },
+    "/admin/blog": { "get": { "summary": "List blog articles", "tags": ["CMS"] } },
+    "/public/portfolio": { "get": { "summary": "Public portfolio", "tags": ["Public"] } },
+    "/public/faq": { "get": { "summary": "Public FAQ", "tags": ["Public"] } },
+    "/public/blog": { "get": { "summary": "Public blog", "tags": ["Public"] } },
+    "/messaging/rooms": { "get": { "summary": "List chat rooms", "tags": ["Messaging"] } },
+    "/notifications": { "get": { "summary": "List notifications", "tags": ["Notifications"] } },
+    "/payments/webhook": { "post": { "summary": "Stripe webhook", "tags": ["Billing"] } }
+  }
+}

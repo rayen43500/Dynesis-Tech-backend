@@ -4,7 +4,7 @@ import { validateRequest } from '../middlewares/validateRequest.js';
 import { requireAuth } from '../middlewares/requireAuth.middleware.js';
 
 import { authController } from '../controllers/auth.controller.js';
-import { loginSchema, registerSchema, refreshSchema, googleVerifySchema, resendActivationSchema } from '../validators/auth.validator.js';
+import { loginSchema, registerSchema, refreshSchema, googleVerifySchema, resendActivationSchema, twoFactorTokenSchema } from '../validators/auth.validator.js';
 
 export const authRouter = Router();
 
@@ -19,6 +19,10 @@ authRouter.post('/refresh', validateRequest({ body: refreshSchema }), authContro
 authRouter.post('/logout', validateRequest({ body: refreshSchema }), authController.logout);
 
 authRouter.post('/google/verify', validateRequest({ body: googleVerifySchema }), authController.googleVerify);
+
+authRouter.post('/2fa/setup', requireAuth, authController.setup2fa);
+authRouter.post('/2fa/enable', requireAuth, validateRequest({ body: twoFactorTokenSchema }), authController.enable2fa);
+authRouter.post('/2fa/disable', requireAuth, validateRequest({ body: twoFactorTokenSchema }), authController.disable2fa);
 
 // Invitation-based onboarding:
 // - Admin creates invitations under `/api/v1/invitations`

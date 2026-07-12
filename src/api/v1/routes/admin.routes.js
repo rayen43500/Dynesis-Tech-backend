@@ -18,6 +18,10 @@ import { translationsAdminRouter } from './admin/translations.routes.js';
 import { mediaAdminRouter } from './admin/media.routes.js';
 import { settingsAdminRouter } from './admin/settings.routes.js';
 import { adminAccountRouter } from './admin/account.routes.js';
+import { invoicesAdminRouter } from './admin/invoices.routes.js';
+import { ticketsAdminRouter } from './admin/tickets.routes.js';
+import { faqAdminRouter } from './admin/faq.routes.js';
+import { blogAdminRouter } from './admin/blog.routes.js';
 
 export const adminRouter = Router();
 
@@ -39,4 +43,8 @@ adminRouter.use('/translations', translationsAdminRouter);
 adminRouter.use('/media', mediaAdminRouter);
 adminRouter.use('/settings', settingsAdminRouter);
 adminRouter.use('/account', adminAccountRouter);
+adminRouter.use('/invoices', invoicesAdminRouter);
+adminRouter.use('/tickets', ticketsAdminRouter);
+adminRouter.use('/faq', faqAdminRouter);
+adminRouter.use('/blog', blogAdminRouter);
 

@@ -20,9 +20,9 @@ async function main() {
     return;
   }
 
-  if (!['admin', 'client'].includes(role)) {
+  if (!['admin', 'client', 'developer', 'project_manager'].includes(role)) {
     // eslint-disable-next-line no-console
-    console.log('Invalid SEED_TARGET_ROLE (expected admin or client)');
+    console.log('Invalid SEED_TARGET_ROLE (expected admin, client, developer, or project_manager)');
     return;
   }
 
