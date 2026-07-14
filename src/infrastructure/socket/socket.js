@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
 
-import { AUTH } from '../config/auth.js';
-import { messagingService } from '../modules/messaging/services/messaging.service.js';
+import { AUTH } from '../../config/auth.js';
+import { messagingService } from '../../modules/messaging/services/messaging.service.js';
 
 export function initSocket(server, allowedOrigins = []) {
   const io = new Server(server, {
