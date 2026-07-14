@@ -22,6 +22,7 @@ import { invoicesAdminRouter } from './admin/invoices.routes.js';
 import { ticketsAdminRouter } from './admin/tickets.routes.js';
 import { faqAdminRouter } from './admin/faq.routes.js';
 import { blogAdminRouter } from './admin/blog.routes.js';
+import { usersAdminRouter } from './admin/users.routes.js';
 
 export const adminRouter = Router();
 
@@ -29,6 +30,7 @@ export const adminRouter = Router();
 adminRouter.use(...requireAdmin);
 adminRouter.use(auditAdminAction);
 
+adminRouter.use('/users', usersAdminRouter);
 adminRouter.use('/homepage', homepageAdminRouter);
 adminRouter.use('/developers', developersAdminRouter);
 adminRouter.use('/portfolios', portfoliosAdminRouter);

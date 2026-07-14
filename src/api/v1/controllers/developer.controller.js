@@ -10,6 +10,7 @@ import { DeveloperActivity } from '../../../modules/developer-work/models/Develo
 import { asyncHandler } from '../middlewares/asyncHandler.js';
 import { sendSuccess } from '../../../shared/http/apiResponse.js';
 import { ApiError } from '../../../shared/http/apiErrors.js';
+import { userAccountService } from '../../../modules/users/services/userAccount.service.js';
 
 function startOfWeek() {
   const now = new Date();
@@ -174,5 +175,28 @@ export const developerController = {
     });
 
     return sendSuccess(res, { data: leave });
+  }),
+
+  updateAccount: asyncHandler(async (req, res) => {
+    const { displayName, email } = req.body;
+    const user = await userAccountService.updateAccount({
+      userId: req.user.userId,
+      displayName,
+      email,
+      photoFilename: req.file?.filename
+    });
+
+    return sendSuccess(res, { data: user });
+  }),
+
+  changePassword: asyncHandler(async (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    await userAccountService.changePassword({
+      userId: req.user.userId,
+      currentPassword,
+      newPassword
+    });
+
+    return sendSuccess(res, { data: { ok: true } });
   })
 };

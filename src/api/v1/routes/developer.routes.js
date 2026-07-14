@@ -8,8 +8,11 @@ import {
   leaveRequestSchema,
   taskCommentSchema,
   taskStatusSchema,
-  timeEntrySchema
+  timeEntrySchema,
+  updateDeveloperAccountSchema,
+  changeDeveloperPasswordSchema
 } from '../validators/developer.validator.js';
+import { userPhotoUpload } from '../../../config/upload.js';
 
 export const developerRouter = Router();
 
@@ -26,3 +29,16 @@ developerRouter.get('/bugs', developerController.bugs);
 developerRouter.get('/deployments', developerController.deployments);
 developerRouter.get('/leaves', developerController.leaves);
 developerRouter.post('/leaves', validateRequest({ body: leaveRequestSchema }), developerController.requestLeave);
+
+developerRouter.patch(
+  '/account',
+  userPhotoUpload.single('photo'),
+  validateRequest({ body: updateDeveloperAccountSchema }),
+  developerController.updateAccount
+);
+
+developerRouter.patch(
+  '/account/password',
+  validateRequest({ body: changeDeveloperPasswordSchema }),
+  developerController.changePassword
+);
