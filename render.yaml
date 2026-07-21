@@ -1,14 +1,75 @@
+# Render — Backend Configuration
+# ================================
+# Service type: Web Service
+# Environment: Node
+# Plan: Free (upgrade for zero cold start)
+# Build command: npm ci
+# Start command: npm start
+# Root Directory: (leave empty — repo root)
+# Auto-deploy: Yes (on push to main)
+
 services:
   - type: web
     name: dynesis-tech-backend
-    env: node
+    runtime: node
     plan: free
+    branch: main
     rootDir: .
     buildCommand: npm ci
     startCommand: npm start
     autoDeploy: true
+    healthCheckPath: /health
     envVars:
+      # ── Server ──────────────────────────────────────────────────
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
+
+      # ── MongoDB Atlas ────────────────────────────────────────────
+      # → Render Dashboard > Environment Variables
+      - key: MONGO_URI
+        sync: false   # set manually in Render dashboard
+
+      # ── Auth ─────────────────────────────────────────────────────
+      - key: JWT_SECRET
+        generateValue: true   # Render auto-generates a secure secret
+
+      # ── CORS — Netlify frontend URLs ──────────────────────────────
+      # Add your real Netlify URL here (comma-separated)
+      - key: FRONTEND_URL
+        value: https://dynesis.netlify.app,https://69f7df9fad6a6900085b7f3f--dynesis.netlify.app
+
+      # ── Stripe (set manually in Render dashboard) ─────────────────
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+
+      # ── Cloudinary (set manually in Render dashboard) ─────────────
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+      # ── Email / SMTP (set manually in Render dashboard) ───────────
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_SECURE
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+      - key: CONTACT_EMAIL
+        value: contact.dynesis@gmail.com
+
+      # ── Google OAuth (set manually in Render dashboard) ───────────
+      - key: GOOGLE_CLIENT_ID
+        sync: false
