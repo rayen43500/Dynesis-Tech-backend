@@ -28,6 +28,19 @@ const ActivityItemSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// Blockchain simulation — each entry stores a SHA-256 hash chain
+const BlockchainEntrySchema = new mongoose.Schema(
+  {
+    stageTitle: { type: String, default: '' },
+    stageIndex: { type: Number, default: 0 },
+    completedAt: { type: Date, default: Date.now },
+    hash: { type: String, default: '' },          // SHA-256 of this entry's data
+    previousHash: { type: String, default: '' },  // SHA-256 of previous entry (chain)
+    adminNote: { type: String, default: '' }
+  },
+  { _id: true }
+);
+
 const ProjectSchema = new mongoose.Schema(
   {
     clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'ClientProfile', required: true, index: true },
@@ -53,7 +66,10 @@ const ProjectSchema = new mongoose.Schema(
     paymentStatus: { type: String, default: 'unpaid' },
 
     consultationNotes: { type: String, default: '' },
-    activityTimeline: { type: [ActivityItemSchema], default: [] }
+    activityTimeline: { type: [ActivityItemSchema], default: [] },
+
+    // Blockchain progress log — immutable chain of completed stages
+    blockchainLog: { type: [BlockchainEntrySchema], default: [] }
   },
   { timestamps: true }
 );
@@ -61,4 +77,3 @@ const ProjectSchema = new mongoose.Schema(
 ProjectSchema.index({ clientId: 1, updatedAt: -1 });
 
 export const Project = mongoose.model('Project', ProjectSchema);
-

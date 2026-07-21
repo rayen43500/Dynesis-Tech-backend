@@ -15,6 +15,7 @@ import { platformSettingsDefaults } from './modules/settings/platformSettingsDef
 import { User } from './modules/users/models/User.model.js';
 import { Notification } from './modules/notifications/models/Notification.model.js';
 import { DeveloperTask } from './modules/developer-work/models/DeveloperTask.model.js';
+import { Pricing } from './modules/pricing/models/Pricing.model.js';
 import { hashPassword } from './shared/security/password.js';
 
 const DEFAULT_ADMIN_EMAIL = 'admin@dynesis.tech';
@@ -539,6 +540,88 @@ async function seedRequests(clientUser) {
   console.log('Demo requests seeded.');
 }
 
+async function seedPricing() {
+  const count = await Pricing.countDocuments();
+  if (count > 0) {
+    console.log(`Pricing: ${count} plans already exist, skipping.`);
+    return;
+  }
+
+  await Pricing.insertMany([
+    {
+      name: 'Site Vitrine',
+      description: 'Idéal pour présenter votre activité en ligne avec un site professionnel, rapide et responsive.',
+      price: '990€',
+      priceNote: '/ projet',
+      category: 'vitrine',
+      highlighted: false,
+      ctaLabel: 'Démarrer mon projet',
+      ctaHref: '/contact',
+      ctaType: 'contact',
+      badgeLabel: '',
+      features: [
+        { label: 'Design moderne & responsive', included: true },
+        { label: 'Jusqu\'à 8 pages', included: true },
+        { label: 'Formulaire de contact', included: true },
+        { label: 'SEO de base', included: true },
+        { label: '3 mois de support', included: true },
+        { label: 'Hébergement inclus', included: false },
+        { label: 'E-commerce', included: false }
+      ],
+      visible: true,
+      order: 1
+    },
+    {
+      name: 'Blockchain & Web3',
+      description: 'Pour les projets nécessitant traçabilité, smart contracts et intégration Web3.',
+      price: '2 900€',
+      priceNote: '/ projet',
+      category: 'blockchain',
+      highlighted: true,
+      ctaLabel: 'Discuter de mon projet',
+      ctaHref: '/contact',
+      ctaType: 'contact',
+      badgeLabel: 'Populaire',
+      features: [
+        { label: 'Smart contracts Solidity', included: true },
+        { label: 'Intégration Ethereum / Polygon', included: true },
+        { label: 'Tableau de bord de suivi blockchain', included: true },
+        { label: 'Authentification Web3', included: true },
+        { label: '6 mois de support', included: true },
+        { label: 'Audit de sécurité smart contract', included: true },
+        { label: 'Tokenomique & conseil', included: false }
+      ],
+      visible: true,
+      order: 2
+    },
+    {
+      name: 'Application sur mesure',
+      description: 'Plateformes SaaS, applications mobiles, APIs complexes — nous construisons votre vision.',
+      price: 'Sur devis',
+      priceNote: 'selon le projet',
+      category: 'custom',
+      highlighted: false,
+      ctaLabel: 'Obtenir un devis',
+      ctaHref: '/contact',
+      ctaType: 'quote',
+      badgeLabel: 'Premium',
+      features: [
+        { label: 'Architecture sur mesure', included: true },
+        { label: 'Application web / mobile', included: true },
+        { label: 'API REST / GraphQL', included: true },
+        { label: 'Intégration IA & automatisation', included: true },
+        { label: 'Support dédié prioritaire', included: true },
+        { label: 'SLA personnalisé', included: true },
+        { label: 'Formation équipe client', included: true }
+      ],
+      visible: true,
+      order: 3
+    }
+  ]);
+
+  console.log('Pricing: 3 plans seeded.');
+}
+
 async function main() {
   await connectMongo();
 
@@ -549,6 +632,7 @@ async function main() {
   await seedHomepage(developers);
   const clientUser = await seedDemoClientAndProject(adminUser);
   await seedRequests(clientUser);
+  await seedPricing();
 
   console.log('Database seed completed.');
 }
