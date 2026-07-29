@@ -37,6 +37,7 @@ export const env = envSchema.parse(process.env);
 
 export function getAllowedOrigins() {
   // FRONTEND_URL is stored as a comma-separated list in `.env`
-  return env.FRONTEND_URL.split(',').map((s) => s.trim());
+  return env.FRONTEND_URL.split(',').map((s) => s.trim().replace(/\/$/, ''));
 }
+
 

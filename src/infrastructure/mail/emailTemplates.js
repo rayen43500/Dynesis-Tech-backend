@@ -137,4 +137,50 @@ export function quoteBriefReceivedNewUserEmailTemplate({
 
   return quoteBriefEmailShell({ safeName, summaryHtml, ctaHtml, ctaText });
 }
+export function newsletterWelcomeEmailTemplate({ email, unsubscribeUrl }) {
+  const subject = 'Welcome to Dynesis Tech Newsletter!';
+  const text = `Thank you for subscribing to Dynesis Tech newsletter!\n\nYou will receive our latest tech updates, insights, and exclusive announcements.\n\nIf you ever wish to unsubscribe, click here:\n${unsubscribeUrl}`;
+  const html = `
+    <div style="font-family: Inter, Arial, sans-serif; background:#f5f7f6; padding:24px;">
+      <div style="max-width:560px; margin:0 auto; background:#ffffff; border-radius:12px; padding:28px 24px; border:1px solid #e8ece9;">
+        <div style="font-family: Lora, Georgia, serif; font-size:22px; color:#1a1a1a; margin-bottom:8px;">
+          Dynesis Tech
+        </div>
+        <h2 style="margin:0 0 12px; font-size:22px; color:#1a1a1a;">Welcome to our Newsletter!</h2>
+        <p style="margin:0 0 16px; color:#4f5a53; line-height:1.6;">
+          Thank you for subscribing (${escapeHtml(email)}). You're now on the list to receive our latest engineering insights, product updates, and tech trends.
+        </p>
+        <hr style="border:none; border-top:1px solid #e8ece9; margin:24px 0 16px;" />
+        <p style="margin:0; color:#8a8a9a; font-size:12px; line-height:1.5;">
+          You received this email because you subscribed to Dynesis Tech.<br />
+          If you wish to stop receiving these emails, <a href="${unsubscribeUrl}" style="color:#3A8A3A;">unsubscribe here</a>.
+        </p>
+      </div>
+    </div>
+  `;
 
+  return { subject, text, html };
+}
+
+export function newsletterCampaignEmailTemplate({ subject, content, unsubscribeUrl }) {
+  const text = `${content}\n\n---\nUnsubscribe: ${unsubscribeUrl}`;
+  const html = `
+    <div style="font-family: Inter, Arial, sans-serif; background:#f5f7f6; padding:24px;">
+      <div style="max-width:560px; margin:0 auto; background:#ffffff; border-radius:12px; padding:28px 24px; border:1px solid #e8ece9;">
+        <div style="font-family: Lora, Georgia, serif; font-size:22px; color:#1a1a1a; margin-bottom:16px;">
+          Dynesis Tech
+        </div>
+        <div style="color:#2c3531; line-height:1.7; font-size:15px; margin-bottom:24px;">
+          ${content}
+        </div>
+        <hr style="border:none; border-top:1px solid #e8ece9; margin:24px 0 16px;" />
+        <p style="margin:0; color:#8a8a9a; font-size:12px; line-height:1.5;">
+          You received this email from Dynesis Tech Newsletter.<br />
+          To stop receiving these emails, <a href="${unsubscribeUrl}" style="color:#3A8A3A;">unsubscribe here</a>.
+        </p>
+      </div>
+    </div>
+  `;
+
+  return { subject, text, html };
+}

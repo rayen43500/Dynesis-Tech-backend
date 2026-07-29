@@ -9,6 +9,7 @@ import { faqPublicRouter } from './public/faq.routes.js';
 import { blogPublicRouter } from './public/blog.routes.js';
 import { pricingPublicRouter } from './public/pricing.routes.js';
 import { chatbotPublicRouter } from './public/chatbot.routes.js';
+import { newsletterPublicRouter } from './public/newsletter.routes.js';
 
 export const publicRouter = Router();
 
@@ -21,3 +22,5 @@ publicRouter.use('/faq', faqPublicRouter);
 publicRouter.use('/blog', blogPublicRouter);
 publicRouter.use('/pricing', pricingPublicRouter);
 publicRouter.use('/chatbot', chatbotPublicRouter);
+publicRouter.use('/newsletter', newsletterPublicRouter);
+

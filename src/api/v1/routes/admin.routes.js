@@ -24,6 +24,7 @@ import { faqAdminRouter } from './admin/faq.routes.js';
 import { blogAdminRouter } from './admin/blog.routes.js';
 import { usersAdminRouter } from './admin/users.routes.js';
 import { pricingAdminRouter } from './admin/pricing.routes.js';
+import { newsletterAdminRouter } from './admin/newsletter.routes.js';
 
 export const adminRouter = Router();
 
@@ -51,4 +52,6 @@ adminRouter.use('/tickets', ticketsAdminRouter);
 adminRouter.use('/faq', faqAdminRouter);
 adminRouter.use('/blog', blogAdminRouter);
 adminRouter.use('/pricing', pricingAdminRouter);
+adminRouter.use('/newsletter', newsletterAdminRouter);
+
 
