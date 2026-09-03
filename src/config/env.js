@@ -36,8 +36,21 @@ const envSchema = z.object({
 export const env = envSchema.parse(process.env);
 
 export function getAllowedOrigins() {
-  // FRONTEND_URL is stored as a comma-separated list in `.env`
-  return env.FRONTEND_URL.split(',').map((s) => s.trim().replace(/\/$/, ''));
+  const fromEnv = env.FRONTEND_URL.split(',')
+    .map((s) => s.trim().replace(/\/$/, ''))
+    .filter(Boolean);
+
+  const devOrigins =
+    env.NODE_ENV === 'development'
+      ? [
+          'http://localhost:3000',
+          'http://127.0.0.1:3000',
+          'http://localhost:5173',
+          'http://127.0.0.1:5173'
+        ]
+      : [];
+
+  return [...new Set([...fromEnv, ...devOrigins])];
 }
 
 

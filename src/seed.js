@@ -16,6 +16,7 @@ import { User } from './modules/users/models/User.model.js';
 import { Notification } from './modules/notifications/models/Notification.model.js';
 import { DeveloperTask } from './modules/developer-work/models/DeveloperTask.model.js';
 import { Pricing } from './modules/pricing/models/Pricing.model.js';
+import { Blog } from './modules/blog/models/Blog.model.js';
 import { hashPassword } from './shared/security/password.js';
 
 const DEFAULT_ADMIN_EMAIL = 'admin@dynesis.tech';
@@ -622,6 +623,111 @@ async function seedPricing() {
   console.log('Pricing: 3 plans seeded.');
 }
 
+async function seedBlog() {
+  const removed = await Blog.deleteOne({ slug: 'handoff-figma-vers-code-sans-perte-en-ligne' });
+  if (removed.deletedCount) {
+    console.log('Blog: removed example article handoff-figma-vers-code-sans-perte-en-ligne');
+  }
+
+  const count = await Blog.countDocuments();
+  if (count > 0) {
+    console.log(`Blog: ${count} article(s) already exist, skipping.`);
+    return;
+  }
+
+  const now = new Date();
+  const daysAgo = (n) => new Date(now.getTime() - n * 24 * 60 * 60 * 1000);
+
+  await Blog.insertMany([
+    {
+      slug: 'design-produit-que-les-equipes-peuvent-livrer',
+      title: localized(
+        'Product design your teams can actually ship',
+        'Un design produit que vos équipes peuvent vraiment livrer'
+      ),
+      excerpt: localized(
+        'From research to handoff, a product design process that keeps engineering, brand and users on the same page.',
+        'De la recherche au handoff, un process design qui aligne ingénierie, marque et utilisateurs.'
+      ),
+      content: localized(
+        'Great product design is not a layer of polish at the end. It starts with how people actually work, what they need to decide, and what engineering can ship without friction.\n\nWe map journeys, test early, and hand off Figma files that developers can trust. The result is a product that looks considered and behaves clearly, from first click to launch.',
+        'Un bon design produit n’est pas une couche de finition. Il part de la façon dont les gens travaillent, de ce qu’ils doivent décider, et de ce que l’ingénierie peut livrer sans friction.\n\nNous cartographions les parcours, testons tôt, et transmettons des fichiers Figma fiables pour les développeurs. Le résultat : un produit soigné, clair du premier clic jusqu’au lancement.'
+      ),
+      authorName: 'Dynesis Tech',
+      categories: ['Design produit & développement'],
+      tags: ['Product Design & Build', 'UX', 'UI'],
+      coverImageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1400&q=80',
+      published: true,
+      publishedAt: daysAgo(18),
+      seo: {
+        metaTitle: localized('Product design your teams can actually ship', 'Un design produit que vos équipes peuvent vraiment livrer'),
+        metaDescription: localized(
+          'A product design process from research to developer handoff.',
+          'Un process de design produit, de la recherche au handoff développeur.'
+        )
+      }
+    },
+    {
+      slug: 'apps-web-et-mobile-pretes-pour-la-production',
+      title: localized(
+        'Web and mobile apps built for production, not demos',
+        'Des apps web et mobile pensées pour la prod, pas pour la démo'
+      ),
+      excerpt: localized(
+        'React, native mobile and solid APIs: how we ship fast products that stay maintainable after launch.',
+        'React, mobile natif et APIs solides : comment nous livrons des produits rapides qui restent maintenables après le lancement.'
+      ),
+      content: localized(
+        'A demo that impresses in a meeting is not the same as a product that holds up in production. We build web and mobile applications with a stack you can own: clear architecture, tested APIs, and performance baked in from the first sprint.\n\nWhether it is a SaaS dashboard, a customer app or both, we keep the codebase readable so your team can keep shipping after we leave.',
+        'Une démo qui impressionne en réunion n’est pas un produit qui tient en production. Nous construisons des applications web et mobile avec une stack que vous pouvez maîtriser : architecture claire, APIs testées, performance dès le premier sprint.\n\nSaaS, app client ou les deux : le code reste lisible pour que votre équipe continue à livrer après notre départ.'
+      ),
+      authorName: 'Dynesis Tech',
+      categories: ['Développement web & mobile'],
+      tags: ['Web & Mobile Development', 'React', 'Mobile'],
+      coverImageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1400&q=80',
+      published: true,
+      publishedAt: daysAgo(12),
+      seo: {
+        metaTitle: localized('Web and mobile apps built for production', 'Des apps web et mobile pensées pour la prod'),
+        metaDescription: localized(
+          'How we ship production-ready web and mobile applications.',
+          'Comment nous livrons des applications web et mobile prêtes pour la production.'
+        )
+      }
+    },
+    {
+      slug: 'transformer-l-entreprise-sans-casser-l-existant',
+      title: localized(
+        'Digital transformation that does not break what already works',
+        'Une transformation digitale qui ne casse pas ce qui marche déjà'
+      ),
+      excerpt: localized(
+        'Modernise legacy systems, move to the cloud and automate the tedious work without freezing the business for six months.',
+        'Moderniser l’existant, passer au cloud et automatiser le travail répétitif, sans geler l’activité pendant six mois.'
+      ),
+      content: localized(
+        'Transformation fails when it tries to replace everything at once. We start with the systems people depend on every day, then introduce cloud, automation and better tooling in slices the organisation can absorb.\n\nThe goal is not a slide deck. It is teams who work faster, with fewer workarounds, and a technical foundation that can grow.',
+        'La transformation échoue quand on veut tout remplacer d’un coup. Nous partons des systèmes dont les équipes dépendent chaque jour, puis nous introduisons cloud, automatisation et meilleurs outils par étapes absorbables.\n\nL’objectif n’est pas un PowerPoint. C’est des équipes plus rapides, moins de contournements, et une base technique qui peut grandir.'
+      ),
+      authorName: 'Dynesis Tech',
+      categories: ['Transformation digitale'],
+      tags: ['Digital Transformation', 'Cloud', 'Automation'],
+      coverImageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=1400&q=80',
+      published: true,
+      publishedAt: daysAgo(7),
+      seo: {
+        metaTitle: localized('Digital transformation that does not break what works', 'Une transformation digitale qui ne casse pas l’existant'),
+        metaDescription: localized(
+          'How we modernise systems without freezing the business.',
+          'Comment nous modernisons les systèmes sans geler l’activité.'
+        )
+      }
+    }
+  ]);
+
+  console.log('Blog: 3 articles seeded.');
+}
+
 async function main() {
   await connectMongo();
 
@@ -633,6 +739,7 @@ async function main() {
   const clientUser = await seedDemoClientAndProject(adminUser);
   await seedRequests(clientUser);
   await seedPricing();
+  await seedBlog();
 
   console.log('Database seed completed.');
 }

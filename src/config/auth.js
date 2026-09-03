@@ -11,7 +11,8 @@ export const AUTH = {
   cookie: {
     name: 'refresh_token',
     httpOnly: true,
-    sameSite: 'lax'
+    // Cross-origin frontend (e.g. Netlify → Render) requires SameSite=None in production.
+    sameSite: env.NODE_ENV === 'production' ? 'none' : 'lax'
   }
 };
 

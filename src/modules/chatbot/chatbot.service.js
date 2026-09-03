@@ -15,7 +15,7 @@ const RULES = [
   },
   {
     patterns: ['tarif', 'prix', 'coût', 'combien', 'pricing', 'abonnement', 'forfait', 'formule'],
-    response: 'Nous proposons 3 formules principales :\n\n• **Site Vitrine** — à partir de 990€\n• **Blockchain & Web3** — à partir de 2 900€\n• **Application sur mesure** — sur devis selon votre projet\n\nConsultez notre page [Tarifs](/pricing) pour plus de détails, ou [contactez-nous](/contact) pour un devis personnalisé.'
+    response: 'Nous proposons 3 formules principales :\n\n• **Site Vitrine** — à partir de 990€\n• **Blockchain & Web3** — à partir de 2 900€\n• **Application sur mesure** — sur devis selon votre projet\n\nConsultez notre page [Services](/services) pour plus de détails, ou [demandez un devis](/work-with-us).'
   },
   {
     patterns: ['vitrine', 'site web', 'site internet', 'présentation'],
@@ -27,7 +27,7 @@ const RULES = [
   },
   {
     patterns: ['application', 'app', 'mobile', 'saas', 'plateforme', 'api', 'backend', 'logiciel'],
-    response: 'Nous développons des **applications sur mesure** : SaaS, applications mobiles, APIs, plateformes enterprise. Ces projets sont établis sur devis selon la complexité. [Décrivez votre projet](/contact) et nous vous recontactons sous 24h.'
+    response: 'Nous développons des **applications sur mesure** : SaaS, applications mobiles, APIs, plateformes enterprise. Ces projets sont établis sur devis selon la complexité. [Décrivez votre projet](/work-with-us) et nous vous recontactons sous 24h.'
   },
   {
     patterns: ['contact', 'joindre', 'appeler', 'email', 'téléphone', 'rendez-vous', 'réunion'],

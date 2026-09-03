@@ -39,7 +39,7 @@ export function createApp() {
         // Allow server-to-server or non-browser tooling
         if (!origin) return cb(null, true);
         if (allowedOrigins.includes(origin)) return cb(null, true);
-        return cb(new Error('Not allowed by CORS'));
+        return cb(null, false);
       },
       credentials: true
     })
