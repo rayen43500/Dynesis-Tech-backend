@@ -125,6 +125,7 @@ const PlatformSettingsSchema = new mongoose.Schema(
         feature2: { type: LocalizedString, default: () => ({}) },
         feature3: { type: LocalizedString, default: () => ({}) },
         heroImage: { type: String, default: '' },
+        heroBackgroundImage: { type: String, default: '' },
         techStack: { type: [String], default: [] },
         ctaPrimary: { type: LocalizedString, default: () => ({}) },
         ctaPrimaryHref: { type: String, default: '/contact' },
@@ -134,6 +135,7 @@ const PlatformSettingsSchema = new mongoose.Schema(
         featuredName: { type: LocalizedString, default: () => ({}) },
         featuredRole: { type: LocalizedString, default: () => ({}) }
       },
+      showcaseImages: { type: [String], default: [] },
       ratings: {
         score: { type: String, default: '4.7' },
         reviewCount: { type: LocalizedString, default: () => ({}) }

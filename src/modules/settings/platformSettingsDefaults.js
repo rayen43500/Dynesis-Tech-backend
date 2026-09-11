@@ -68,15 +68,17 @@ export const platformSettingsDefaults = {
       feature2: { en: 'Experienced engineers', fr: 'Ingénieurs expérimentés' },
       feature3: { en: 'Enterprise-grade quality', fr: 'Qualité entreprise' },
       heroImage: '/images/hero-developer.png',
+      heroBackgroundImage: '',
       techStack: ['HuggingFace', 'PyTorch', 'LangChain', 'OpenAI', 'AWS', 'FastAPI'],
-      ctaPrimary: { en: 'Book a discovery call', fr: 'Réserver un appel découverte' },
-      ctaPrimaryHref: '/contact',
-      ctaSecondary: { en: 'Explore our platform', fr: 'Explorer notre plateforme' },
-      ctaSecondaryHref: '/work-with-us',
+      ctaPrimary: { en: 'Start a project', fr: 'Démarrer un projet' },
+      ctaPrimaryHref: '/work-with-us',
+      ctaSecondary: { en: 'View our work', fr: 'Voir nos réalisations' },
+      ctaSecondaryHref: '/services',
       matchBadge: { en: '100% Match', fr: '100 % compatible' },
       featuredName: { en: 'Thomas R.', fr: 'Thomas R.' },
       featuredRole: { en: 'Senior Full Stack Engineer', fr: 'Ingénieur full stack senior' }
     },
+    showcaseImages: [],
     ratings: {
       score: '4.7',
       reviewCount: { en: '329 reviews', fr: '329 avis' }

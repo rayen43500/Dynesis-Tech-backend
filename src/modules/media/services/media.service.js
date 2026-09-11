@@ -25,8 +25,7 @@ export const mediaService = {
     const signature = cloudinary.v2.utils.api_sign_request(
       {
         timestamp,
-        folder: uploadFolder,
-        resource_type: resourceType
+        folder: uploadFolder
       },
       config.apiSecret
     );

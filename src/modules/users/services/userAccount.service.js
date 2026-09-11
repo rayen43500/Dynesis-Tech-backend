@@ -1,15 +1,17 @@
 import { hashPassword, verifyPassword } from '../../../shared/security/password.js';
 import { ApiError } from '../../../shared/http/apiErrors.js';
-import { deleteUploadFile, toPublicUserUploadPath } from '../../../config/upload.js';
+import { deleteUploadFile, isUploadFileAvailable, toPublicUserUploadPath } from '../../../config/upload.js';
 import { User } from '../models/User.model.js';
 
 export function mapPublicUser(user) {
+  const profilePicture = user.profilePicture || '';
+
   return {
     id: user._id.toString(),
     email: user.email,
     role: user.role,
     displayName: user.displayName || '',
-    profilePicture: user.profilePicture || ''
+    profilePicture: isUploadFileAvailable(profilePicture) ? profilePicture : ''
   };
 }
 

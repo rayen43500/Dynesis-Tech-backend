@@ -71,6 +71,17 @@ export function toPublicUserUploadPath(filename) {
   return `/uploads/users/${filename}`;
 }
 
+export function isUploadFileAvailable(publicPath) {
+  if (!publicPath || typeof publicPath !== 'string') return false;
+  if (publicPath.startsWith('/uploads/developers/')) {
+    return fs.existsSync(path.join(developersUploadDir, path.basename(publicPath)));
+  }
+  if (publicPath.startsWith('/uploads/users/')) {
+    return fs.existsSync(path.join(usersUploadDir, path.basename(publicPath)));
+  }
+  return true;
+}
+
 export function deleteUploadFile(publicPath) {
   if (!publicPath || typeof publicPath !== 'string') return;
   if (publicPath.startsWith('/uploads/developers/')) {

@@ -103,6 +103,7 @@ export const settingsUpsertSchema = z.object({
           feature2: localized.optional(),
           feature3: localized.optional(),
           heroImage: z.string().optional(),
+          heroBackgroundImage: z.string().optional(),
           techStack: z.array(z.string()).optional(),
           ctaPrimary: localized.optional(),
           ctaPrimaryHref: z.string().optional(),
@@ -113,6 +114,7 @@ export const settingsUpsertSchema = z.object({
           featuredRole: localized.optional()
         })
         .optional(),
+      showcaseImages: z.array(z.string()).max(6).optional(),
       ratings: z
         .object({
           score: z.string().optional(),

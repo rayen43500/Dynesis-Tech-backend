@@ -6,7 +6,6 @@ import { asyncHandler } from '../middlewares/asyncHandler.js';
 import { ApiError } from '../../../shared/http/apiErrors.js';
 import { sendSuccess } from '../../../shared/http/apiResponse.js';
 import { parsePagination } from '../../../shared/http/pagination.js';
-
 async function getClientProfile(userId) {
   const profile = await ClientProfile.findOne({ userId }).lean();
   if (!profile) throw new ApiError({ statusCode: 404, code: 'CLIENT_PROFILE_NOT_FOUND', message: 'Client profile not found' });
