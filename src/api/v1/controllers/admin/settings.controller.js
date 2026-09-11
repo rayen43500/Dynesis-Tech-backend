@@ -53,9 +53,32 @@ export const settingsAdminController = {
     delete body.singletonKey;
     delete body._id;
 
+    // Flatten nested body into dot-notation so $set patches individual fields
+    // without overwriting sibling fields (e.g. heroVideoUrl won't erase heroImage)
+    function flattenToDotNotation(obj, prefix = '') {
+      const result = {};
+      for (const key of Object.keys(obj)) {
+        const fullKey = prefix ? `${prefix}.${key}` : key;
+        const val = obj[key];
+        if (
+          val !== null &&
+          typeof val === 'object' &&
+          !Array.isArray(val) &&
+          !(val instanceof Date)
+        ) {
+          Object.assign(result, flattenToDotNotation(val, fullKey));
+        } else {
+          result[fullKey] = val;
+        }
+      }
+      return result;
+    }
+
+    const flatBody = flattenToDotNotation(body);
+
     const doc = await PlatformSettings.findOneAndUpdate(
       { singletonKey: 'platform' },
-      { $set: body },
+      { $set: flatBody },
       { new: true, upsert: true }
     ).lean();
 
