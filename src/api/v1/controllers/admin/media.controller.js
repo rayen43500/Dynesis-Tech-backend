@@ -11,7 +11,8 @@ const ALLOWED_FOLDERS = [
   'homepage',
   'services',
   'inquiries',
-  'branding'
+  'branding',
+  'auth'
 ];
 
 function assertAllowedFolder(folder) {

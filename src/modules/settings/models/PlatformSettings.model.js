@@ -87,7 +87,9 @@ const PlatformSettingsSchema = new mongoose.Schema(
       siteName: { type: LocalizedString, default: () => ({}) },
       tagline: { type: LocalizedString, default: () => ({}) },
       logoUrl: { type: String, default: '' },
-      logoMark: { type: String, default: 'D' }
+      logoMark: { type: String, default: 'D' },
+      authBackgroundImage: { type: String, default: '' },
+      authBackgroundVideo: { type: String, default: '' }
     },
 
     contact: {
@@ -126,8 +128,13 @@ const PlatformSettingsSchema = new mongoose.Schema(
         feature3: { type: LocalizedString, default: () => ({}) },
         heroImage: { type: String, default: '' },
         heroBackgroundImage: { type: String, default: '' },
+        heroBackgroundVideo: { type: String, default: '' },
         showcaseBackgroundImage: { type: String, default: '' },
+        showcaseBackgroundVideo: { type: String, default: '' },
         servicesBackgroundImage: { type: String, default: '' },
+        servicesBackgroundVideo: { type: String, default: '' },
+        authBackgroundImage: { type: String, default: '' },
+        authBackgroundVideo: { type: String, default: '' },
         heroVideoUrl: { type: String, default: '' },
         heroVideoPoster: { type: String, default: '' },
         techStack: { type: [String], default: [] },

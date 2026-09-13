@@ -5,7 +5,9 @@ export const platformSettingsDefaults = {
     siteName: { en: 'Dynesis Tech', fr: 'Dynesis Tech' },
     tagline: { en: 'Premium Software Agency Platform', fr: 'Plateforme d\'agence logicielle premium' },
     logoUrl: '',
-    logoMark: 'D'
+    logoMark: 'D',
+    authBackgroundImage: '',
+    authBackgroundVideo: ''
   },
   contact: {
     email: 'contact@dynesis.tech',
@@ -69,8 +71,13 @@ export const platformSettingsDefaults = {
       feature3: { en: 'Enterprise-grade quality', fr: 'Qualité entreprise' },
       heroImage: '/images/hero-developer.png',
       heroBackgroundImage: '',
+      heroBackgroundVideo: '',
       showcaseBackgroundImage: '',
+      showcaseBackgroundVideo: '',
       servicesBackgroundImage: '',
+      servicesBackgroundVideo: '',
+      authBackgroundImage: '',
+      authBackgroundVideo: '',
       heroVideoUrl: '',
       heroVideoPoster: '',
       techStack: ['HuggingFace', 'PyTorch', 'LangChain', 'OpenAI', 'AWS', 'FastAPI'],

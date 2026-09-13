@@ -41,7 +41,9 @@ export const settingsUpsertSchema = z.object({
       siteName: localized.optional(),
       tagline: localized.optional(),
       logoUrl: z.string().optional(),
-      logoMark: z.string().optional()
+      logoMark: z.string().optional(),
+      authBackgroundImage: z.string().optional(),
+      authBackgroundVideo: z.string().optional()
     })
     .optional(),
   contact: z
@@ -104,8 +106,13 @@ export const settingsUpsertSchema = z.object({
           feature3: localized.optional(),
           heroImage: z.string().optional(),
           heroBackgroundImage: z.string().optional(),
+          heroBackgroundVideo: z.string().optional(),
           showcaseBackgroundImage: z.string().optional(),
+          showcaseBackgroundVideo: z.string().optional(),
           servicesBackgroundImage: z.string().optional(),
+          servicesBackgroundVideo: z.string().optional(),
+          authBackgroundImage: z.string().optional(),
+          authBackgroundVideo: z.string().optional(),
           heroVideoUrl: z.string().optional(),
           heroVideoPoster: z.string().optional(),
           techStack: z.array(z.string()).optional(),
