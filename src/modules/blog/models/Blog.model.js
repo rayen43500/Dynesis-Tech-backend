@@ -18,7 +18,11 @@ const BlogSchema = new mongoose.Schema(
     authorName: { type: String, default: '' },
     categories: { type: [String], default: [], index: true },
     tags: { type: [String], default: [] },
+    badgeType: { type: String, default: 'BLOG' },
+    readTime: { type: String, default: '3 MIN READ' },
     coverImageUrl: { type: String, default: '' },
+    isMain: { type: Boolean, default: false, index: true },
+    isFeatured: { type: Boolean, default: false, index: true },
     published: { type: Boolean, default: false, index: true },
     publishedAt: { type: Date, default: null },
     seo: {

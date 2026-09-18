@@ -79,9 +79,21 @@ export const authService = {
       activationTokenExpires
     });
 
-    await sendActivationEmail({ email, token: activationToken });
+    // Send activation email — non-blocking: if SMTP is not configured or fails,
+    // the account is still created and the user can request a resend later.
+    try {
+      await sendActivationEmail({ email, token: activationToken });
+    } catch (mailErr) {
+      console.warn('[auth] Activation email could not be sent:', mailErr?.message || mailErr);
+      if (env.NODE_ENV === 'development') {
+        console.info(`[auth][DEV] Activation token for ${email}: ${activationToken}`);
+        console.info(`[auth][DEV] Activation URL: ${env.FRONTEND_URL.split(',')[0]?.trim()}/activate/${activationToken}`);
+      }
+    }
+
     return { ok: true };
   },
+
 
   async loginWithPassword({ email, password }) {
     const user = await User.findOne({ email }).select('+passwordHash');
