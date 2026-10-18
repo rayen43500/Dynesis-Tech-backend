@@ -20,7 +20,7 @@ function cookieOptions() {
 export const authController = {
   register: asyncHandler(async (req, res) => {
     const { name, email, password } = req.body;
-    await authService.registerClient({ name, email, password });
+    await authService.registerClient({ name, email, password, origin: req.headers.origin });
     return res.status(201).json({ success: true, message: 'Check your email to activate your account.' });
   }),
 
@@ -77,7 +77,7 @@ export const authController = {
 
   resendActivation: asyncHandler(async (req, res) => {
     const { email } = req.body;
-    await authService.resendActivation({ email });
+    await authService.resendActivation({ email, origin: req.headers.origin });
     return res.status(200).json({ success: true });
   }),
 

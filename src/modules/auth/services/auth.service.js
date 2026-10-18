@@ -51,15 +51,15 @@ function getDefaultFrontendUrl() {
   return env.FRONTEND_URL.split(',')[0]?.trim();
 }
 
-async function sendActivationEmail({ email, token }) {
-  const frontendUrl = getDefaultFrontendUrl();
+async function sendActivationEmail({ email, token, origin }) {
+  const frontendUrl = (origin && origin.startsWith('http')) ? origin : getDefaultFrontendUrl();
   const link = `${frontendUrl}/activate/${token}`;
   const { subject, text, html } = activationEmailTemplate({ activationLink: link });
   await sendEmail({ to: email, subject, text, html });
 }
 
 export const authService = {
-  async registerClient({ name, email, password }) {
+  async registerClient({ name, email, password, origin }) {
     const existing = await User.findOne({ email });
     if (existing) {
       throw new ApiError({ statusCode: 409, code: 'AUTH_EMAIL_ALREADY_REGISTERED', message: 'Email already registered' });
@@ -79,11 +79,13 @@ export const authService = {
       activationTokenExpires
     });
 
-    // Send activation email asynchronously so registration returns immediately
-    sendActivationEmail({ email, token: activationToken }).catch((mailErr) => {
+    // Send mandatory activation email
+    try {
+      await sendActivationEmail({ email, token: activationToken, origin });
+    } catch (mailErr) {
       console.warn('[auth] Activation email could not be sent:', mailErr?.message || mailErr);
       console.info(`[auth] Activation URL for ${email}: ${getDefaultFrontendUrl()}/activate/${activationToken}`);
-    });
+    }
 
     return { ok: true };
   },
@@ -100,7 +102,9 @@ export const authService = {
 
     const ok = await verifyPassword(password, user.passwordHash);
     if (!ok) throw new ApiError({ statusCode: 401, code: 'AUTH_INVALID_CREDENTIALS', message: 'Invalid credentials' });
-    if (user.role === 'client' && !user.isActivated) {
+
+    // Strict account confirmation check: login is blocked until email is confirmed
+    if (!user.isActivated) {
       throw new ApiError({
         statusCode: 403,
         code: 'AUTH_NOT_ACTIVATED',
@@ -202,7 +206,7 @@ export const authService = {
     };
   },
 
-  async resendActivation({ email }) {
+  async resendActivation({ email, origin }) {
     const user = await User.findOne({ email });
     if (!user) {
       throw new ApiError({ statusCode: 404, code: 'AUTH_USER_NOT_FOUND', message: 'User not found' });
@@ -218,7 +222,7 @@ export const authService = {
     await user.save();
 
     try {
-      await sendActivationEmail({ email: user.email, token: activationToken });
+      await sendActivationEmail({ email: user.email, token: activationToken, origin });
     } catch (mailErr) {
       console.warn('[auth] Resend activation email could not be sent:', mailErr?.message || mailErr);
       console.info(`[auth] Activation URL for ${user.email}: ${getDefaultFrontendUrl()}/activate/${activationToken}`);
