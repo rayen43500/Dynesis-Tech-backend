@@ -1,4 +1,4 @@
-import { getAllowedOrigins } from '../../../../config/env.js';
+import { getAllowedOrigins, env } from '../../../../config/env.js';
 import { sendEmail } from '../../../../infrastructure/mail/mailer.js';
 import {
   quoteBriefReceivedExistingUserEmailTemplate,
@@ -24,36 +24,48 @@ export const quotesPublicController = {
         wantsDiscoveryCall: Boolean(wantsDiscoveryCall)
       });
 
-      const frontendBase = getAllowedOrigins()[0];
+      const frontendBase = req.headers.origin || getAllowedOrigins()[0];
       const existingUser = await User.findOne({ email });
 
-      try {
-        const mail = existingUser
-          ? quoteBriefReceivedExistingUserEmailTemplate({
-              name,
-              projectType,
-              budget,
-              timeline,
-              wantsDiscoveryCall: Boolean(wantsDiscoveryCall),
-              loginUrl: `${frontendBase}/login?email=${encodeURIComponent(email)}`
-            })
-          : quoteBriefReceivedNewUserEmailTemplate({
-              name,
-              projectType,
-              budget,
-              timeline,
-              wantsDiscoveryCall: Boolean(wantsDiscoveryCall),
-              registerUrl: `${frontendBase}/register?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`
-            });
+      const mail = existingUser
+        ? quoteBriefReceivedExistingUserEmailTemplate({
+            name,
+            projectType,
+            budget,
+            timeline,
+            wantsDiscoveryCall: Boolean(wantsDiscoveryCall),
+            loginUrl: `${frontendBase}/login?email=${encodeURIComponent(email)}`
+          })
+        : quoteBriefReceivedNewUserEmailTemplate({
+            name,
+            projectType,
+            budget,
+            timeline,
+            wantsDiscoveryCall: Boolean(wantsDiscoveryCall),
+            registerUrl: `${frontendBase}/register?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`
+          });
 
-        await sendEmail({
-          to: email,
-          subject: mail.subject,
-          text: mail.text,
-          html: mail.html
-        });
-      } catch (mailErr) {
+      // Send client confirmation email asynchronously
+      sendEmail({
+        to: email,
+        subject: mail.subject,
+        text: mail.text,
+        html: mail.html
+      }).catch((mailErr) => {
         console.error('Quote confirmation email failed:', mailErr?.message || mailErr);
+      });
+
+      // Notify admin team
+      const adminEmail = env.CONTACT_EMAIL;
+      if (adminEmail) {
+        sendEmail({
+          to: adminEmail,
+          subject: `[Nouveau Devis] ${name} — ${projectType}`,
+          text: `Nouveau devis reçu de ${name} (${email})\nEntreprise: ${company || 'N/A'}\nProjet: ${projectType}\nBudget: ${budget}\nDélai: ${timeline}\n\nDescription:\n${description}`,
+          html: `<h3>Nouveau devis reçu</h3><p><strong>Nom :</strong> ${name}<br><strong>Email :</strong> ${email}<br><strong>Entreprise :</strong> ${company || 'N/A'}<br><strong>Projet :</strong> ${projectType}<br><strong>Budget :</strong> ${budget}<br><strong>Délai :</strong> ${timeline}</p><p><strong>Description :</strong><br>${description}</p>`
+        }).catch((adminErr) => {
+          console.error('Quote admin notification email failed:', adminErr?.message || adminErr);
+        });
       }
 
       return res.status(200).json({ success: true });

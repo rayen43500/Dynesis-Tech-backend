@@ -84,12 +84,21 @@ export const quotesAdminController = {
 
     const text = `Hi ${clientName},\n\n${body}\n\n— The Dynesis Tech Team\nhello@dynesistech.com`;
 
-    await sendEmail({
-      to: quote.email,
-      subject,
-      text,
-      html
-    });
+    try {
+      await sendEmail({
+        to: quote.email,
+        subject,
+        text,
+        html
+      });
+    } catch (mailErr) {
+      console.error('Failed to send proposal email:', mailErr?.message || mailErr);
+      throw new ApiError({
+        statusCode: 503,
+        code: 'MAIL_SEND_FAILED',
+        message: `Échec d'envoi de l'e-mail (${mailErr?.message || 'SMTP indisponible'}). Vérifiez les identifiants SMTP.`
+      });
+    }
 
     quote.status = 'proposal_sent';
     quote.proposalSentAt = new Date();

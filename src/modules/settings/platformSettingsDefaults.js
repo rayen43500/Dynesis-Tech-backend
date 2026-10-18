@@ -64,11 +64,11 @@ export const platformSettingsDefaults = {
       headline2: { en: 'Built for Your Growth.', fr: 'conçu pour votre croissance.' },
       subheading: {
         en: 'From strategy to launch, we deliver digital products that perform — built with precision, clarity, and zero compromise on quality.',
-        fr: 'De la stratégie au lancement, nous livrons des produits numériques performants — avec précision, clarté et sans compromis sur la qualité.'
+        fr: 'Nous concevons des produits numériques de haute précision, rapides, fiables et taillés pour l’échelle — du cadrage stratégique au déploiement en production.'
       },
-      feature1: { en: 'Strategy-led delivery', fr: 'Livraison orientée stratégie' },
-      feature2: { en: 'Experienced engineers', fr: 'Ingénieurs expérimentés' },
-      feature3: { en: 'Enterprise-grade quality', fr: 'Qualité entreprise' },
+      feature1: { en: 'Strategy-led delivery', fr: 'Cadrage & vision stratégique' },
+      feature2: { en: 'Experienced engineers', fr: 'Ingénierie de pointe & seniors' },
+      feature3: { en: 'Enterprise-grade quality', fr: 'Standard de qualité entreprise' },
       heroImage: '/images/hero-developer.png',
       heroBackgroundImage: '',
       heroBackgroundVideo: '',
@@ -85,7 +85,7 @@ export const platformSettingsDefaults = {
       ctaPrimaryHref: '/work-with-us',
       ctaSecondary: { en: 'View our work', fr: 'Voir nos réalisations' },
       ctaSecondaryHref: '/services',
-      matchBadge: { en: '100% Match', fr: '100 % compatible' },
+      matchBadge: { en: '100% Match', fr: '100 % aligné' },
       featuredName: { en: 'Thomas R.', fr: 'Thomas R.' },
       featuredRole: { en: 'Senior Full Stack Engineer', fr: 'Ingénieur full stack senior' }
     },
@@ -95,12 +95,12 @@ export const platformSettingsDefaults = {
       reviewCount: { en: '329 reviews', fr: '329 avis' }
     },
     testimonials: {
-      heading: { en: 'Trusted by teams who value clarity', fr: 'Ils nous font confiance pour avancer avec clarté' },
+      heading: { en: 'Trusted by teams who value clarity', fr: 'La confiance de nos partenaires, le reflet de notre exigence' },
       items: [
         {
           quote: {
             en: '"Dynesis brought structure and calm to a complex roadmap. We shipped on time with a level of quality our stakeholders noticed."',
-            fr: '« Dynesis a apporté structure et sérénité à une feuille de route complexe. Nous avons livré dans les délais avec une qualité remarquée par nos parties prenantes. »'
+            fr: '« Dynesis a insufflé une rigueur exceptionnelle et une clarté totale à notre roadmap. Nous avons déployé notre produit dans les délais, avec un niveau de finition plébiscité par nos parties prenantes. »'
           },
           name: { en: 'Olivia M.', fr: 'Olivia M.' },
           role: { en: 'Product Lead · SaaS', fr: 'Lead produit · SaaS' }
@@ -108,7 +108,7 @@ export const platformSettingsDefaults = {
         {
           quote: {
             en: '"Clear communication, strong design execution, and engineering rigor. The process felt enterprise-grade from day one."',
-            fr: '« Communication claire, exécution design solide et rigueur technique. Le processus a été de niveau entreprise dès le premier jour. »'
+            fr: '« Une communication limpide, une culture de l’excellence et une rigueur technique sans faille. L’expérience a atteint un standard d’ingénierie digne des plus grands leaders technologiques dès le premier jour. »'
           },
           name: { en: 'Daniel R.', fr: 'Daniel R.' },
           role: { en: 'CTO · Fintech', fr: 'CTO · Fintech' }
@@ -116,7 +116,7 @@ export const platformSettingsDefaults = {
         {
           quote: {
             en: '"They helped us move fast without sacrificing maintainability. The handover was clean and the codebase is a joy to extend."',
-            fr: '« Ils nous ont permis d\'aller vite sans sacrifier la maintenabilité. La passation a été propre et la base de code est un plaisir à faire évoluer. »'
+            fr: '« Ils nous ont permis d\'accélérer notre mise sur le marché sans jamais compromettre la pérennité architecturale. Le passage de témoin s’est fait en toute fluidité, et la base de code demeure exemplaire. »'
           },
           name: { en: 'Sofia A.', fr: 'Sofia A.' },
           role: { en: 'Engineering Manager · B2B', fr: 'Engineering Manager · B2B' }
@@ -124,7 +124,7 @@ export const platformSettingsDefaults = {
         {
           quote: {
             en: '"A premium partner. Discovery was sharp, estimates were transparent, and delivery was consistent week after week."',
-            fr: '« Un partenaire premium. La phase de cadrage était précise, les estimations transparentes et la livraison constante semaine après semaine. »'
+            fr: '« Un partenaire stratégique rare. Cadrage millimétré, transparence absolue et livraisons d\'une qualité constante semaine après semaine. Notre retour sur investissement a été immédiat. »'
           },
           name: { en: 'Michael T.', fr: 'Michael T.' },
           role: { en: 'Founder · Startup', fr: 'Fondateur · Startup' }

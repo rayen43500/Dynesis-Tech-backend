@@ -79,17 +79,11 @@ export const authService = {
       activationTokenExpires
     });
 
-    // Send activation email — non-blocking: if SMTP is not configured or fails,
-    // the account is still created and the user can request a resend later.
-    try {
-      await sendActivationEmail({ email, token: activationToken });
-    } catch (mailErr) {
+    // Send activation email asynchronously so registration returns immediately
+    sendActivationEmail({ email, token: activationToken }).catch((mailErr) => {
       console.warn('[auth] Activation email could not be sent:', mailErr?.message || mailErr);
-      if (env.NODE_ENV === 'development') {
-        console.info(`[auth][DEV] Activation token for ${email}: ${activationToken}`);
-        console.info(`[auth][DEV] Activation URL: ${env.FRONTEND_URL.split(',')[0]?.trim()}/activate/${activationToken}`);
-      }
-    }
+      console.info(`[auth] Activation URL for ${email}: ${getDefaultFrontendUrl()}/activate/${activationToken}`);
+    });
 
     return { ok: true };
   },
@@ -223,7 +217,17 @@ export const authService = {
     user.activationTokenExpires = activationTokenExpires;
     await user.save();
 
-    await sendActivationEmail({ email: user.email, token: activationToken });
+    try {
+      await sendActivationEmail({ email: user.email, token: activationToken });
+    } catch (mailErr) {
+      console.warn('[auth] Resend activation email could not be sent:', mailErr?.message || mailErr);
+      console.info(`[auth] Activation URL for ${user.email}: ${getDefaultFrontendUrl()}/activate/${activationToken}`);
+      throw new ApiError({
+        statusCode: 503,
+        code: 'MAIL_SEND_FAILED',
+        message: 'Could not send activation email. Please check SMTP configuration or try again later.'
+      });
+    }
     return { ok: true };
   },
 
