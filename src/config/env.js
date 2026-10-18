@@ -31,7 +31,13 @@ const envSchema = z.object({
     .transform((v) => (v === 'true' ? true : v === 'false' ? false : undefined)),
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
-  SMTP_FROM: z.string().optional()
+  SMTP_FROM: z.string().optional(),
+
+  // HTTPS Email APIs & Relays (bypass Render free-tier SMTP port block on 587/465)
+  NETLIFY_MAIL_URL: z.string().optional(),
+  EMAIL_RELAY_SECRET: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(),
+  BREVO_API_KEY: z.string().optional()
 });
 
 export const env = envSchema.parse(process.env);
